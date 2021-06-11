@@ -33,7 +33,7 @@ const db = {
       name: "Ivek",
       email: "ivek@gmail.com",
       password: "klokani",
-      entries: 0,
+      entries: 10,
       joined: new Date(),
     },
   ],
@@ -53,7 +53,7 @@ app.post("/signin", (req, res) => {
   }
 
   if (currentUser.length !== 0) {
-    res.json("success");
+    res.json(currentUser[0]);
   } else {
     res.status(404).json({ status: 404, messages: "user not found!" });
   }
@@ -63,15 +63,14 @@ app.post("/register", (req, res) => {
   const { email, name, password } = req.body;
 
   db.users.push({
-    id: id++,
+    id: 200 + 1,
     name,
     email,
-    password,
     entries: 0,
     joined: new Date(),
   });
 
-  res.json("success");
+  res.json(db.users[db.users.length - 1]);
 });
 
 app.get("/profile/:id", (req, res) => {
@@ -94,7 +93,7 @@ app.put("/image", (req, res) => {
   for (const user of db.users) {
     if (req.body.id === user.id) {
       user.entries++;
-      return res.json(db.users);
+      return res.json(user.entries);
     }
   }
 
