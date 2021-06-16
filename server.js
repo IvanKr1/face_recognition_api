@@ -1,104 +1,20 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
 const cors = require("cors");
-
+const db = require("./config/database")
 const app = express();
+const userRouter = require("./routes/userRoutes")
+
+db.authenticate()
+	.then(() => console.log('Connection has been established successfully.'))
+  .catch((err) => console.error('Unable to connect to the database:', err))
+
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
-// const saltRounds = 10;
+app.use('/', userRouter);
 
-const db = {
-  users: [
-    {
-      id: "123",
-      name: "John",
-      email: "john@gmail.com",
-      password: "cookies",
-      entries: 0,
-      joined: new Date(),
-    },
-    {
-      id: "124",
-      name: "Sally",
-      email: "sally@gmail.com",
-      password: "bananas",
-      entries: 0,
-      joined: new Date(),
-    },
-    {
-      id: "125",
-      name: "Ivek",
-      email: "ivek@gmail.com",
-      password: "klokani",
-      entries: 10,
-      joined: new Date(),
-    },
-  ],
-};
-
-app.get("/", (req, res) => {
-  res.json(db.users);
-});
-
-app.post("/signin", (req, res) => {
-  let currentUser = [];
-
-  for (const user of db.users) {
-    if (req.body.email === user.email && req.body.password === user.password) {
-      currentUser.push(user);
-    }
-  }
-
-  if (currentUser.length !== 0) {
-    res.json(currentUser[0]);
-  } else {
-    res.status(404).json({ status: 404, messages: "user not found!" });
-  }
-});
-
-app.post("/register", (req, res) => {
-  const { email, name, password } = req.body;
-
-  db.users.push({
-    id: 200 + 1,
-    name,
-    email,
-    entries: 0,
-    joined: new Date(),
-  });
-
-  res.json(db.users[db.users.length - 1]);
-});
-
-app.get("/profile/:id", (req, res) => {
-  const currentUser = [];
-
-  for (const user of db.users) {
-    if (req.params.id === user.id) {
-      currentUser.push(user);
-    }
-  }
-
-  if (currentUser.length !== 0) {
-    res.json(currentUser);
-  } else {
-    res.status(404).json({ status: 404, messages: "user not found!" });
-  }
-});
-
-app.put("/image", (req, res) => {
-  for (const user of db.users) {
-    if (req.body.id === user.id) {
-      user.entries++;
-      return res.json(user.entries);
-    }
-  }
-
-  res.json("error");
-});
 
 const PORT = 5000;
 
