@@ -69,8 +69,9 @@ const updateEntries = async (req, res) => {
       },
     });
 
+
     await User.update(
-      { entries: currentUser[0].entries++ },
+      { entries: Number(currentUser[0].entries) + 1},
       {
         where: {
           email: req.body.email,
@@ -78,9 +79,7 @@ const updateEntries = async (req, res) => {
       }
     );
 
-    res.status(200).json({
-      message: "Entries upadted!!!",
-    });
+    res.status(200).json({entries: Number(currentUser[0].entries) + 1});
   } catch (e) {
     console.log(e);
     res.status(500).send({
