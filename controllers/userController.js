@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -78,8 +79,46 @@ const updateEntries = async (req, res) => {
     );
 
     res.status(200).json({
-      message: "Entries upadted!!!"
-    })
+      message: "Entries upadted!!!",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      e: "Internal server error.",
+    });
+  }
+};
+
+const signUser = async (req, res) => {
+  try {
+    let signUser = await User.findAll({
+      where: {
+        email: req.body.email,
+      },
+    });
+
+    const {id, email, name, entries, password} = signUser[0]
+
+    if (signUser.length !== 0) {
+      bcrypt.compare(req.body.password, password, (err, passwordExist) => {
+        if (passwordExist) {
+          res.status(200).json({
+            id,
+            email,
+            name,
+            entries
+          });
+        } else {
+          res.status(401).json({
+            message: "Please enter valid password!"
+          })
+        }
+      });
+    } else {
+      res.status(404).json({
+        message: "User does not exist!"
+      })
+    }
   } catch (e) {
     console.log(e);
     res.status(500).send({
@@ -93,4 +132,5 @@ module.exports = {
   registerUser,
   getSingleUser,
   updateEntries,
+  signUser
 };
