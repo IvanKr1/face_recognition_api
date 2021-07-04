@@ -128,10 +128,26 @@ const signUser = async (req, res) => {
   }
 };
 
+// const deleteAll = async (req, res) => {
+//   try {
+//     await User.destroy({
+//       truncate: true
+//     });
+
+//     res.status(200).json('Users deleted!');
+//   } catch (e) {
+//     console.log(e);
+//     res.status(500).send({
+//       e: "Internal server error.",
+//     });
+//   }
+// };
+
 module.exports = {
   getAllUsers,
   registerUser,
   getSingleUser,
   updateEntries,
-  signUser
+  signUser,
+  deleteAll
 };

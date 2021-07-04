@@ -15,7 +15,6 @@ app.use(cors());
 
 app.use('/', userRouter);
 
-
 const PORT = 5000;
 
 app.listen(PORT, () => console.log(`The server is running on PORT: ${PORT}`));
